@@ -34,6 +34,10 @@ angular.module('peepoltvApp', ['ngResource', 'ui.bootstrap', 'licode'])
           }]
         }
       })
+      .when('/govj', {
+        templateUrl: '/views/go-vj.html',
+        controller: 'GoVjCtrl'
+      })
       .when('/streams/:streamId', {
         templateUrl: '/views/stream.html',
         controller: 'StreamCtrl'
