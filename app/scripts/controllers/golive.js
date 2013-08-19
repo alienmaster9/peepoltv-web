@@ -17,8 +17,17 @@ angular.module('peepoltvApp')
       backdropClick: false
     };
 
+    // Open/close modal methods
+    $scope.openModal = function(){
+      $scope.goLiveInitModal = true;
+    };
+
+    $scope.closeModal = function(){
+      $scope.goLiveInitModal = false;
+    };
+
     // Open de dialog
-    $scope.goLiveInitModal = true;
+    $scope.openModal();
 
     // Start the broadcast
     $scope.startBroadcast = function(metadata){
@@ -28,7 +37,7 @@ angular.module('peepoltvApp')
       }
 
       // Hide the modal
-      $scope.goLiveInitModal = false;
+      $scope.closeModal();
 
       // Star the broadcast
       goOnAir(metadata);
@@ -61,6 +70,9 @@ angular.module('peepoltvApp')
       if(!r.stay && $scope.localStream.stream){
         $scope.localStream.stream.stream.stop();
         history.back();
+      }
+      else{
+        $scope.openModal();
       }
     });
 
