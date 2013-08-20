@@ -92,7 +92,7 @@
                                   </ul>
                                 </div><!-- /.module-overlay -->
                                 <a href="/streams/{{stream.id}}" class="live-stream-link">
-                                  <video id="stream{{key}}" ng-src="http://beta.peepol.tv/videos/stream{{key}}.mp4" width="113" height="63" autoplay loop muted></video>
+                                  <video id="stream{{key}}" ng-src="{{getStreamUrl(key)}}" width="113" height="63" autoplay loop muted></video>
                                 </a>
                               </div><!-- /.module-video -->
                             </li>

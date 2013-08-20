@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('peepoltvApp')
-  .controller('MockChannelCtrl', function ($scope, $browser) {
+  .controller('MockChannelCtrl', function ($scope, $browser, $sce) {
 
     $scope.streams = [
       {
@@ -55,6 +55,10 @@ angular.module('peepoltvApp')
     ];
 
     $scope.stream = $scope.streams[0];
+
+    $scope.getStreamUrl = function(key){
+      return $sce.trustAsResourceUrl('http://beta.peepol.tv/videos/stream' + key + '.mp4');
+    };
 
     var drawScreen = function(){
       var width = $scope.canvas.width();
