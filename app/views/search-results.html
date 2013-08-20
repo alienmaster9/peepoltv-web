@@ -50,8 +50,9 @@
 					</div><!-- /.row-fluid -->
 					<div class="row-fluid">
 						<div class="span12">
-							<ol class="local-row grid-streams no-bullets">										<li class="module-large span3" ng-repeat="stream in streams">
-									<div ng-include="'/views/snippets/module-large.html'"></div>
+							<ol class="local-row grid-streams no-bullets">
+              	<li class="module-large span3" ng-repeat="stream in streams">
+                  <div stream-module ng-model="stream" size="large"></div>
 								</li><!-- /.module-large -->
 							</ol><!-- /.local-row -->
 						</div><!-- /.span12 -->
