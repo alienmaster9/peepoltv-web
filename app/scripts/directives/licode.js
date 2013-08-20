@@ -8,7 +8,14 @@ angular.module('licode', [])
       template: '<div></div>',
       scope: {
         ngModel: '=',
-        token: '@'
+        token: '@',
+        onAccessAccepted: '&',
+        onAccessDenied: '&',
+        onRoomConnected: '&',
+        onRoomDisconnected: '&',
+        onStreamAdded: '&',
+        onStreamRemoved: '&',
+        onStreamData: '&'
       },
       link: function postLink(scope, element, attrs) {
         var room, elementId;
@@ -50,21 +57,29 @@ angular.module('licode', [])
 
             licode.stream.show(elementId);
             licode.stream.player.video.muted = true;
+
+            // Execute access accepted callback
+            if(scope.onAccessAccepted){
+              scope.onAccessAccepted();
+            }
           });
 
           licode.stream.addEventListener('access-denied', function() {
-            console.log('Access to webcam and microphone rejected');
-
             // Set permission status
             scope.$apply(function(){
               licode.permissionsGranted = false;
             });
+
+            // Execute access denied callback
+            if(scope.onAccessDenied){
+              scope.onAccessDenied();
+            }
           });
 
         }
 
-        scope.$watch('token', function(value, oldValue){
-          console.log("Token changed: ", value, oldValue);
+        // Connect to strean based on token change
+        scope.$watch('token', function(value){
           // Disconnect if exist a room and it's connected
           if(room && room.state === 2){
             room.disconnect();
@@ -87,21 +102,45 @@ angular.module('licode', [])
           room.addEventListener('room-disconnected', function(roomEvent) {
             // Remove the room when disconnected
             room = null;
+
+            // Execute room disconnected callback
+            if(scope.onRoomDisconnected){
+              scope.onRoomDisconnected();
+            }
           });
 
           // Connected
           room.addEventListener('room-connected', function(roomEvent) {
+
+            // Stream added to the room
+            room.addEventListener('stream-added', function(event) {
+              // Execute stream added callback
+              if(scope.onStreamAdded){
+                scope.onStreamAdded();
+              }
+            });
+
+            // Stream Removed from the room
+            room.addEventListener('stream-removed', function(event) {
+              // Execute stream removed callback
+              if(scope.onStreamRemoved){
+                scope.onStreamRemoved();
+              }
+            });
+
+            // Stream data into the room
+            room.addEventListener('stream-data', function(event) {
+              // Execute stream data callback
+              if(scope.onStreamData){
+                scope.onStreamData();
+              }
+            });
+
             if(attrs.flow === "outbound"){
-              // Stream added to the rrom
-              room.addEventListener('stream-added', function(event) {
-                if (licode.stream.getID() === event.stream.getID()) {
-
-
-                }
-              });
 
               // Publish stream to the room
               room.publish(licode.stream);
+
             }
             else if(attrs.flow === "inbound"){
 
@@ -118,6 +157,11 @@ angular.module('licode', [])
 
               // Subscribe to the first stream in the room stream
               room.subscribe(roomEvent.streams[0]);
+            }
+
+            // Execute room connected callback
+            if(scope.onRoomConnected){
+              scope.onRoomConnected();
             }
           });
         });
