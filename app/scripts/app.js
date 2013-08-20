@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('peepoltvApp', ['ngResource', 'ui.bootstrap', 'licode'])
+angular.module('peepoltvApp', ['ngRoute', 'ngResource', 'ui.bootstrap', 'licode'])
   .config(function ($routeProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
     $routeProvider

@@ -2,12 +2,17 @@
   "name": "peepoltv",
   "version": "0.0.0",
   "dependencies": {
-    "unstable-angular-complete": "1.1.4",
     "angular-bootstrap": "~0.4.0",
     "json3": "~3.2.4",
     "es5-shim": "~2.0.8",
     "underscore": "~1.4.4",
     "bootstrap": "~2.1.1",
-    "jquery": "~2.0.0"
+    "jquery": "~2.0.0",
+    "angular": "1.2.0rc1",
+    "angular-resource": "1.2.0rc1",
+    "angular-route": "1.2.0rc1",
+    "angular-animate": "1.2.0rc1",
+    "angular-sanitize": "1.2.0rc1",
+    "angular-cookies": "1.2.0rc1"
   }
 }
