@@ -28,7 +28,9 @@
 					</div><!-- /.row-fluid -->
 				</section><!-- /.top-content -->
 
-				<div ng-switch on="section">
+        <div ng-include="'/views/channels/local.html'"
+             ng-controller="ChannelsLocalCtrl"></div>
+				<!-- <div ng-switch on="section">
 				  <div ng-include="'/views/channels/local.html'"
 				       ng-controller="ChannelsLocalCtrl"
 				       ng-switch-when="local"></div>
