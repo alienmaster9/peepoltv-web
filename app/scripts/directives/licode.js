@@ -15,6 +15,7 @@ angular.module('licode', [])
         onRoomDisconnected: '&',
         onStreamAdded: '&',
         onStreamRemoved: '&',
+        onStreamSubscribed: '&',
         onStreamData: '&'
       },
       link: function postLink(scope, element, attrs) {
@@ -153,6 +154,11 @@ angular.module('licode', [])
               room.addEventListener('stream-subscribed', function(streamEvent) {
                 licode.stream = streamEvent.stream;
                 licode.stream.show(elementId);
+
+                // Execute stream subscribed callback
+                if(scope.onStreamSubscribed){
+                  scope.onStreamSubscribed();
+                }
               });
 
               // Subscribe to the first stream in the room stream
