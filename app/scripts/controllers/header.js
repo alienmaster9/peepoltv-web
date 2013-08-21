@@ -5,7 +5,7 @@ angular.module('peepoltvApp')
 
     $scope.$on('$locationChangeSuccess', function (){
       var path = $location.path();
-      var match = path.match(/(?:explore|channels|peepol|golive)/);
+      var match = path.match(/(?:explore|channels|peepol|golive|govj)/);
       $scope.section = (match)? match[0] : 'explore';
     });
 
