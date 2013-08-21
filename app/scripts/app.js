@@ -32,12 +32,19 @@ angular.module('peepoltvApp', ['ngRoute', 'ngResource', 'ui.bootstrap', 'licode'
           user: ['authService', function(authService){
             return authService.resource.status({}).$promise;
           }]
-        }
+        },
+        redirectAfterLogin: true
       })
       .when('/govj', {
         templateUrl: '/views/go-vj.html',
         controller: 'GoVjCtrl',
-        section: 'govj'
+        section: 'govj',
+        resolve: {
+          user: ['authService', function(authService){
+            return authService.resource.status({}).$promise;
+          }]
+        },
+        redirectAfterLogin: true
       })
       .when('/streams/:streamId', {
         templateUrl: '/views/stream.html',

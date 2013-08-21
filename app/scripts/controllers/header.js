@@ -11,9 +11,9 @@ angular.module('peepoltvApp')
 
     // Catch the unauthorized pages
     $rootScope.$on('$routeChangeError', function (event, parameters) {
-      if(parameters.$$route.controller === "GoliveCtrl"){
-        // Go to golive after loging in
-        $scope.goLive();
+      if(parameters.$$route.redirectAfterLogin){
+        redirectTo = parameters.$$route.originalPath;
+        loginAndRedirect();
       }
     });
 
@@ -43,10 +43,11 @@ angular.module('peepoltvApp')
     };
 
     // launches the Go Live if the user is logged in
-    $scope.goLive = function() {
+    var redirectTo = "/";
+    var loginAndRedirect = function() {
       $scope.goLiveAfterLogin = false;
       if ($scope.user && $scope.user.email) {
-        $location.path("/golive");
+        $location.path(redirectTo);
       } else {
         $scope.openLoginModal();
         $scope.goLiveAfterLogin = true;
@@ -63,7 +64,7 @@ angular.module('peepoltvApp')
     $scope.closeLoginModalCallback = function(){
       $scope.loginModalInit = false;
       if ($scope.goLiveAfterLogin && $scope.user && $scope.user.email) {
-        $scope.goLive();
+        loginAndRedirect();
       }
     };
 
