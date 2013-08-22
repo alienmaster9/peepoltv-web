@@ -7,7 +7,8 @@ angular.module('licode', [])
       replace: true,
       template: '<div></div>',
       scope: {
-        ngModel: '=',
+        ngModel: '=?',
+        options: '=?',
         token: '@',
         onAccessAccepted: '&',
         onAccessDenied: '&',
@@ -43,8 +44,13 @@ angular.module('licode', [])
         // Initiate the stream (camera/mic permissions)
         if(attrs.flow === "outbound"){
 
+          // Stream options
+          if(!scope.options){
+            scope.options = {audio: true, video: true, data: false};
+          }
+
           // Create the stream
-          licode.stream = Erizo.Stream({audio: true, video: true, data: false});
+          licode.stream = Erizo.Stream(scope.options);
           licode.stream.init();
 
           // Show the stream if persmission are accepted
@@ -153,7 +159,11 @@ angular.module('licode', [])
               // Stream subscribed
               room.addEventListener('stream-subscribed', function(streamEvent) {
                 licode.stream = streamEvent.stream;
-                licode.stream.show(elementId);
+
+                // Initialize the video element only if the stream has video or audio
+                if(streamEvent.stream.hasVideo() || streamEvent.stream.hasAudio()){
+                  licode.stream.show(elementId);
+                }
 
                 // Execute stream subscribed callback
                 if(scope.onStreamSubscribed){
