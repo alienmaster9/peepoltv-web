@@ -1,0 +1,44 @@
+<div class="carousel-wrapper">
+  <licode token="{{token}}" flow="outbound" options="dataStreamOptions"></licode>
+  <div class="row-fluid">
+    <div class="module-xlarge span12">
+      <canvas id="canvas" width="940" height="512"></canvas>
+    </div><!-- /.module-xlarge -->
+  </div><!-- /.row-fluid -->
+  <div class="row-fluid">
+    <div class="video-slider span12">
+      <a href="#" class="slider-control pull-left span1" title="Under Development" rel="tooltip"><i class="icon-arrow-left"></i><span class="visually-hidden">Previous</span></a>
+      <div class="slider-wrapper pull-left span10" ng-show="streams.length > 0">
+        <div class="row-fluid">
+          <div class="span12">
+            <ul class="no-bullets">
+              <li class="module-mini pull-left span2" ng-repeat="stream in streams | limitTo:maxStreams">
+                <div class="module-video"
+                     ng-click="changeStream(stream)"
+                     ng-mouseenter="previewStream(stream)"
+                     ng-mouseleave="showCurrentStream()">
+                  <div class="module-overlay">
+                    <div class="btn-overlay">
+                      <button class="btn-play" type="button" rel="tooltip" data-title="Play Stream" ng-click="go('/streams/{{stream.id}}')">
+                        <span class="visually-hidden">Switch to this stream</span>
+                      </button>
+                    </div>
+                    <ul class="specs-stream no-bullets">
+                      <li class="specs-title"><em class="title">{{stream.title}}</em></li>
+                    </ul>
+                  </div><!-- /.module-overlay -->
+                  <licode flow="inbound" token="{{stream.token}}" width="115" height="65"
+                          on-stream-removed="removeStream(stream)"></licode>
+                </div><!-- /.module-video -->
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="pull-left span10" ng-hide="streams.length > 0">
+        <div>No live streams available right now</div>
+      </div>
+      <a href="#" class="slider-control pull-left span1" title="Under Development" rel="tooltip"><i class="icon-arrow-right"></i><span class="visually-hidden">Next</span></a>
+    </div><!-- /.video-slider -->
+  </div><!-- /.row-fluid -->
+</div><!-- /.carousel-wrapper -->

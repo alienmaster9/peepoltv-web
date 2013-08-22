@@ -4,42 +4,32 @@
       <div class="span12">
         <section class="mid-content">
           <div class="row-fluid">
-        <div class="span8">
-          <h3 class="section-title">
-          <i class="channel-icon"></i> VJ
-          </h3>
-        </div>
-      </div><!-- /.row-fluid -->
+            <div class="span8">
+              <h3 class="section-title">
+                <i class="channel-icon"></i> VJ
+              </h3>
+            </div>
+          </div><!-- /.row-fluid -->
+          <div class="row-fluid">
+            <div class="span12" data-drop="true" jqyoui-droppable jqyoui-options="droppableOptions" ng-model="streampool">
+              <div vj-module streams-pool="streampool" max-streams="4"></div>
+            </div><!-- /.span12 -->
+          </div><!-- /.row-fluid -->
           <div class="row-fluid">
             <div class="span12">
-              <div class="carousel-wrapper">
-                <div class="row-fluid">
-                  <div class="module-xlarge span12">
-                    <!-- <div ng-include="'/views/snippets/module-xlarge-channel.html'"></div> -->
-                  </div><!-- /.module-xlarge -->
-                </div><!-- /.row-fluid -->
-                <div class="row-fluid">
-                  <div class="video-slider span12">
-                    <a href="#" class="slider-control pull-left span1" title="Under Development" rel="tooltip"><i class="icon-arrow-left"></i><span class="visually-hidden">Previous</span></a>
-                    <div class="slider-wrapper pull-left span10">
-                      <div class="row-fluid">
-                        <div class="span12">
-                          <ul class="no-bullets">
-                            <li class="module-mini pull-left span2" ng-repeat="stream in streams | limitTo:5">
-                              <div ng-include="'/views/snippets/vj-module-mini.html'" ng-click="changeMainStream(stream)"></div>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <a href="#" class="slider-control pull-left span1" title="Under Development" rel="tooltip"><i class="icon-arrow-right"></i><span class="visually-hidden">Next</span></a>
-                  </div><!-- /.video-slider -->
-                </div><!-- /.row-fluid -->
-              </div><!-- /.carousel-wrapper -->
+              <h3 class="section-title">
+                <i class="stream-icon"></i>
+                Live streams!
+              </h3>
+              <ol class="no-bullets">
+                <li class="module-large span3" ng-repeat="stream in streams track by stream.id" data-drag="true" jqyoui-draggable="draggable" jqyoui-options="draggableOptions" ng-model="stream">
+                  <div stream-module ng-model="stream" size="large"></div>
+                </li><!-- /.module-large -->
+              </ol><!-- /.onfire-row -->
             </div><!-- /.span12 -->
           </div><!-- /.row-fluid -->
         </section><!-- /.mid-content -->
       </section><!-- /.lower-content -->
 
-  </div><!-- /.container-fluid -->
-</div><!-- /.main -->
+    </div><!-- /.container-fluid -->
+  </div><!-- /.main -->
