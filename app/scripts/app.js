@@ -66,6 +66,15 @@ angular.module('peepoltvApp', ['ngRoute', 'ngResource', 'ui.bootstrap', 'licode'
         templateUrl: '/views/channel.html',
         controller: 'ChannelCtrl'
       })
+      .when('/user/:username', {
+        templateUrl: '/views/user-profile.html',
+        controller: 'UserProfileCtrl',
+        resolve: {
+          user: ['userService', '$route', function(userService, $route){
+            return userService.resource.get({username: $route.current.params.username}).$promise;
+          }]
+        }
+      })
       .otherwise({
         redirectTo: '/'
       });

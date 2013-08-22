@@ -1,0 +1,22 @@
+<div class="main" role="main">
+  <div class="width-controller container-fluid">
+    <div class="row-fluid">
+      <div class="span12">
+        <section class="mid-content">
+          <div class="row-fluid">
+        <div class="span8">
+          <h3 class="section-title">
+          <i class="channel-icon"></i> {{user.username}}
+          </h3>
+        </div>
+      </div><!-- /.row-fluid -->
+          <div class="row-fluid">
+            <div class="span12">
+              <div vj-module streams-pool="streams" ng-if="user.vj"></div>
+            </div><!-- /.span12 -->
+          </div><!-- /.row-fluid -->
+        </section><!-- /.mid-content -->
+      </section><!-- /.lower-content -->
+
+  </div><!-- /.container-fluid -->
+</div><!-- /.main -->
