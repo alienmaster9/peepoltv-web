@@ -9,27 +9,12 @@ angular.module('peepoltvApp')
         params:{
           channelId: '@channelId'
         },
-        transformResponse: function(data){
-          data = JSON.parse(data);
-          if(data.streams.length > 0){
-            data.streams = data.streams.reverse();
-          }
-          return data;
-        },
         withCredentials: true
       },
       'search': {
         method:'GET',
         params: {},
         isArray: true,
-        transformResponse: function(data){
-          data = JSON.parse(data);
-          data = _.map(data, function(c){
-            c.streams = c.streams.reverse();
-            return c;
-          });
-          return data;
-        },
         withCredentials: true
       },
     });
