@@ -8,7 +8,6 @@ angular.module('licode', [])
       template: '<div></div>',
       scope: {
         ngModel: '=?',
-        options: '=?',
         token: '@',
         onAccessAccepted: '&',
         onAccessDenied: '&',
@@ -45,12 +44,14 @@ angular.module('licode', [])
         if(attrs.flow === "outbound"){
 
           // Stream options
-          if(!scope.options){
-            scope.options = {audio: true, video: true, data: false};
-          }
+          var streamOptions = {
+            audio: ('audio' in attrs)? (attrs.audio || attrs.audio === '') || false : false,
+            video: ('video' in attrs)? (attrs.video || attrs.video === '') || false : false,
+            data: ('data' in attrs)? (attrs.data || attrs.data === '') || false : false
+          };
 
           // Create the stream
-          licode.stream = Erizo.Stream(scope.options);
+          licode.stream = Erizo.Stream(streamOptions);
           licode.stream.init();
 
           // Show the stream if persmission are accepted
