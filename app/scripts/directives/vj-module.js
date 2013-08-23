@@ -86,6 +86,7 @@ angular.module('peepoltvApp')
                 // Connect to the data room if it is not connected
                 if(scope.localDataStream.stream.room === undefined){
                   scope.token = r.token;
+                  drawScreen(true);
                 }
                 else
                 {
