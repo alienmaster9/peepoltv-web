@@ -200,7 +200,7 @@ angular.module('peepoltvApp')
 
 
           // Paint the frame
-          if(clear || video){
+          if(clear || !video){
             // paint it black
             ctx.fillStyle = "rgb(0,0,0)";
             ctx.fillRect (0, 0, width, height);
