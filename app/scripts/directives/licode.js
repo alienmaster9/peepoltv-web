@@ -40,14 +40,18 @@ angular.module('licode', [])
           scope.ngModel = licode;
         }
 
+        var getBooleanAttribute = function(name){
+          return (name in attrs)? (attrs[name] || attrs[name] === '') || false : false;
+        };
+
         // Initiate the stream (camera/mic permissions)
         if(attrs.flow === "outbound"){
 
           // Stream options
           var streamOptions = {
-            audio: ('audio' in attrs)? (attrs.audio || attrs.audio === '') || false : false,
-            video: ('video' in attrs)? (attrs.video || attrs.video === '') || false : false,
-            data: ('data' in attrs)? (attrs.data || attrs.data === '') || false : false
+            audio: getBooleanAttribute('audio'),
+            video: getBooleanAttribute('video'),
+            data: getBooleanAttribute('data')
           };
 
           // Create the stream
@@ -64,7 +68,7 @@ angular.module('licode', [])
             });
 
             licode.stream.show(elementId);
-            licode.stream.player.video.muted = true;
+            licode.stream.player.video.muted = getBooleanAttribute('muted');
 
             // Execute access accepted callback
             if(scope.onAccessAccepted){
