@@ -29,7 +29,6 @@ angular.module('peepoltvApp')
       templateUrl: '/views/directives/vj-module.html',
       restrict: 'EA',
       scope: {
-        token: '@',
         maxStreams: '@',
         streams: '=streamsPool'
       },
@@ -42,7 +41,7 @@ angular.module('peepoltvApp')
         // Watch when streams are added or removed from the pool
         scope.$watch('streams', function(value, oldValue){
           if(value.length > scope.maxStreams){
-            console.log("Streams reached the max amount of streams in the pool");
+            console.log('Streams reached the max amount of streams in the pool');
 
             // Remove the extra streams
             value.length = scope.maxStreams;
