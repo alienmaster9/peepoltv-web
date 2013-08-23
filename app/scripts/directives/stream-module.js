@@ -18,6 +18,9 @@ angular.module('peepoltvApp')
 
         return TEMPLATE_PATH + size;
       },
-      restrict: 'EA'
+      restrict: 'EA',
+      scope: {
+        stream: '='
+      }
     };
   });

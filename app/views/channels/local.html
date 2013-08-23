@@ -22,7 +22,7 @@
 								<div class="span12">
 									<ul class="no-bullets">
 										<li class="module-mini pull-left span2" ng-repeat="stream in channel.streams | limitTo:20">
-                      <div stream-module ng-model="stream" size="mini" ng-click="changeMainStream(stream)"></div>
+                      <div stream-module stream="stream" size="mini" ng-click="changeMainStream(stream)"></div>
 										</li>
 									</ul>
 								</div>
