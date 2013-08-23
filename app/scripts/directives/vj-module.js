@@ -56,10 +56,20 @@ angular.module('peepoltvApp')
               function(r){
                 // add the stream to the pool to trigger connection
                 scope.streamsInThePool.push(r.stream);
+
+                // Connect to the data room if it is not connected
+                if(scope.localDataStream.stream.room === undefined){
+                  scope.token = r.token;
+                }
+                else
+                {
+                  // Broadcast to all users that a new stream is in the pool
+                  broadcastEvent('pool-change');
+                }
               },
-              function(r){
+              function(){
                 // remove the stream from the streams array
-                console.log("TODO: no se");
+                _.reject(value, function(s){ return s.id === id;});
               }
             );
           });
@@ -91,13 +101,23 @@ angular.module('peepoltvApp')
           currentStream = stream;
 
           // Post to the api that the current stream changed
-          //currentStream.$put({active: true});
+          streampoolService.resource.put({'stream_id': stream.id, active: true});
+
+          // Send thought the data channel info of the current stream
+          broadcastEvent('stream-active', { 'stream_id': stream.id });
         };
 
         scope.removeStream = function(stream){
           // Remove the stream from the pool
+          // TODO:
 
-          debugger;
+        };
+
+        var broadcastEvent = function(event, params){
+          scope.localDataStream.stream.sendData({
+            'event': event,
+            params: params
+          });
         };
 
         // clear big stream
