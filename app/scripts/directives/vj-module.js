@@ -137,7 +137,14 @@ angular.module('peepoltvApp')
 
         scope.removeStream = function(data){
           // Remove the stream from the pool
-          // TODO:
+          var indexToRemove = _.indexOf(_.map(scope.streams, function(s) {
+            return s.id;
+          }), data.id);
+
+          scope.$apply(function(){
+            scope.streams.splice(indexToRemove);
+          });
+        };
 
         };
 
