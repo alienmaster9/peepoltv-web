@@ -168,6 +168,7 @@ angular.module('licode', [])
                 // Initialize the video element only if the stream has video or audio
                 if(streamEvent.stream.hasVideo() || streamEvent.stream.hasAudio()){
                   licode.stream.show(elementId);
+                  licode.stream.player.video.muted = getBooleanAttribute('muted');
                 }
 
                 // Execute stream subscribed callback
