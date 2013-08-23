@@ -22,8 +22,12 @@
                 Live streams!
               </h3>
               <ol class="no-bullets">
-                <li class="module-large span3" ng-repeat="stream in streams track by stream.id" data-drag="true" jqyoui-draggable="draggable" jqyoui-options="draggableOptions" ng-model="stream">
-                  <div stream-module ng-model="stream" size="large"></div>
+                <li class="module-large span3" ng-repeat="availableStream in availableStreams track by availableStream.stream.id"
+                    data-drag="true"
+                    jqyoui-draggable="draggable"
+                    jqyoui-options="draggableOptions"
+                    ng-model="availableStream">
+                  <div stream-module stream="availableStream.stream" size="large"></div>
                 </li><!-- /.module-large -->
               </ol><!-- /.onfire-row -->
             </div><!-- /.span12 -->

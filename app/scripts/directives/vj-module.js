@@ -17,6 +17,25 @@ angular.module('peepoltvApp')
         method:'PUT',
         withCredentials: true
       },
+      getAvailableStreams: {
+        method:'GET',
+        params: {
+          live: true,
+          limit:20,
+          'force_check': true
+        },
+        url: settings.apiHost + '/streams',
+        transformResponse: function(data){
+          return _.map(angular.fromJson(data), function(s){
+            return {
+              active: false,
+              stream: s
+            };
+          });
+        },
+        isArray: true,
+        withCredentials: true
+      }
     });
 
     // Public API service
@@ -36,10 +55,15 @@ angular.module('peepoltvApp')
         var canvas, ctx, video, interval, currentStream;
 
         // The streams that are going to be connected
-        scope.streamsInThePool = [];
+        scope.streamsConnected = [];
 
         // Watch when streams are added or removed from the pool
         scope.$watch('streams', function(value, oldValue){
+          // Return if not streams defined
+          if(!value){
+            return;
+          }
+
           if(value.length > scope.maxStreams){
             console.log('Streams reached the max amount of streams in the pool');
 
@@ -48,14 +72,16 @@ angular.module('peepoltvApp')
           }
 
           // Find all the new stream and add them to the pool
-          var newStreamsIds = _.difference(_.pluck(value, 'id'), _.pluck(oldValue, 'id'));
+          var newIds = _.pluck(_.pluck(value, 'stream'), 'id');
+          var oldIds = _.pluck(_.pluck(oldValue, 'stream'), 'id');
+          var newStreamsIds = _.difference(newIds, oldIds);
 
           // Post to the api the new streams
           _.each(newStreamsIds, function(id){
             streampoolService.resource.post({'stream_id': id}).$promise.then(
               function(r){
                 // add the stream to the pool to trigger connection
-                scope.streamsInThePool.push(r.stream);
+                scope.streamsConnected.push(r.stream);
 
                 // Connect to the data room if it is not connected
                 if(scope.localDataStream.stream.room === undefined){
@@ -76,9 +102,9 @@ angular.module('peepoltvApp')
         }, true);
 
         // Preview a stream
-        scope.previewStream = function(stream){
+        scope.previewStream = function(data){
           // Show this stream in the big screen
-          showStreamBig(stream);
+          showStreamBig(data.stream);
         };
 
         // Go back to the current stream
@@ -93,21 +119,22 @@ angular.module('peepoltvApp')
         };
 
         // Change the current stream
-        scope.changeStream = function(stream){
+        scope.changeStream = function(data){
           // Show this stream in the big screen
-          showStreamBig(stream);
+          showStreamBig(data.stream);
 
           // Set the current stream
-          currentStream = stream;
+          currentStream = data.stream;
+          data.active = true;
 
           // Post to the api that the current stream changed
-          streampoolService.resource.put({'stream_id': stream.id, active: true});
+          streampoolService.resource.put({'stream_id': data.stream.id, active: true});
 
           // Send thought the data channel info of the current stream
-          broadcastEvent('stream-active', { 'stream_id': stream.id });
+          broadcastEvent('stream-active', { 'stream_id': data.stream.id });
         };
 
-        scope.removeStream = function(stream){
+        scope.removeStream = function(data){
           // Remove the stream from the pool
           // TODO:
 
