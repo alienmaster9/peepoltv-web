@@ -183,7 +183,9 @@ angular.module('peepoltvApp')
           }
 
           // Create a new interval to render the video
-          interval = setInterval(drawScreen, 33);
+          if(video){
+            interval = setInterval(drawScreen, 33);
+          }
         };
 
         // Redrew at framerate to the canvas
@@ -195,17 +197,19 @@ angular.module('peepoltvApp')
           var height = canvas.height();
 
           // Destination size
-          var dWidth = height*video.videoWidth/video.videoHeight;
-          var dHeight = height;
-          var widthDiff = (width-dWidth)/2;
+
 
           // Paint the frame
-          if(clear){
+          if(clear || video){
             // paint it black
             ctx.fillStyle = "rgb(0,0,0)";
             ctx.fillRect (0, 0, width, height);
           }
           else {
+            var dWidth = height*video.videoWidth/video.videoHeight;
+            var dHeight = height;
+            var widthDiff = (width-dWidth)/2;
+
             ctx.drawImage(video , widthDiff, 0, dWidth, dHeight);
 
             // paint it black
