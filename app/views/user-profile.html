@@ -12,7 +12,8 @@
       </div><!-- /.row-fluid -->
           <div class="row-fluid">
             <div class="span12">
-              <div vj-module streams-pool="streams" ng-if="user.vj"></div>
+              <div vj-module streams-pool="user.stream_pools" token="{{user.vj_token}}" type="viewer" max-streams="4"
+              on-stream-data="getPoolStreams(event)"></div>
             </div><!-- /.span12 -->
           </div><!-- /.row-fluid -->
         </section><!-- /.mid-content -->

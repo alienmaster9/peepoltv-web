@@ -12,12 +12,12 @@
     <div class="video-slider span12">
       <a href="#" class="slider-control pull-left span1" title="Under Development" rel="tooltip"><i class="icon-arrow-left"></i><span class="visually-hidden">Previous</span></a>
 
-      <div class="slider-wrapper pull-left span10" ng-show="streams.length > 0">
+      <div class="slider-wrapper pull-left span10" ng-show="streamsPool.length > 0">
         <div class="row-fluid">
           <div class="span12">
-
             <ul class="no-bullets">
-              <li class="module-mini pull-left span2" ng-repeat="connectedStream in streams | limitTo:maxStreams">
+              <li class="module-mini pull-left span2"
+                  ng-repeat="connectedStream in streamsPool | limitTo:maxStreams">
                 <div id="pool-stream-{{connectedStream.stream.id}}"
                      class="module-video"
                      ng-click="changeStream(connectedStream)"
@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <div class="pull-left span10" ng-hide="streams.length > 0">
+      <div class="pull-left span10" ng-hide="streamsPool.length > 0">
         <div>No live streams available right now</div>
       </div>
 

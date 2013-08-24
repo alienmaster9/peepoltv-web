@@ -1,0 +1,24 @@
+<div class="carousel-wrapper">
+  <!-- Data room -->
+  <licode ng-model="localDataStream" token="{{token}}" flow="inbound" data
+          on-stream-data="dataReceived(event)"></licode>
+
+  <div class="row-fluid">
+    <div class="module-xlarge span12">
+      <canvas id="canvas" width="940" height="512"></canvas>
+    </div><!-- /.module-xlarge -->
+  </div><!-- /.row-fluid -->
+  <ul class="no-bullets">
+    <li class="pull-left span2"
+        ng-repeat="connectedStream in streamsPool | limitTo:maxStreams">
+
+      <!-- View stream connections -->
+      <licode flow="inbound"
+              token="{{connectedStream.stream.token}}"
+              width="115" height="65"
+              audio video muted
+              on-stream-removed="removeStream(connectedStream.stream)"></licode>
+    </li>
+  </ul>
+
+</div><!-- /.carousel-wrapper -->

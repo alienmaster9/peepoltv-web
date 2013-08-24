@@ -44,21 +44,30 @@ angular.module('peepoltvApp')
     };
   })
   .directive('vjModule', function ($browser, streampoolService) {
+    var DEFAULT_TYPE = 'viewer';
+    var TEMPLATE_PATH = '/views/directives/';
+    var TEMPLATES = {
+      creator: 'vj-module.html',
+      viewer: 'vj-module-viewer.html'
+    };
+
     return {
-      templateUrl: '/views/directives/vj-module.html',
+      templateUrl: function(e){
+        var type = TEMPLATES[e.attr('type') || DEFAULT_TYPE];
+        return TEMPLATE_PATH + type;
+      },
       restrict: 'EA',
       scope: {
+        token: '@?',
         maxStreams: '@',
-        streams: '=streamsPool'
+        streamsPool: '=',
+        onStreamData: '&'
       },
       link: function postLink(scope, element, attrs) {
-        var canvas, ctx, video, interval, currentStream;
-
-        // The streams that are going to be connected
-        scope.streamsConnected = [];
+        var canvas, ctx, interval, currentStream, previewStream;
 
         // Watch when streams are added or removed from the pool
-        scope.$watch('streams', function(value, oldValue){
+        scope.$watch('streamsPool', function(value, oldValue){
           // Return if not streams defined
           if(!value){
             return;
@@ -71,35 +80,36 @@ angular.module('peepoltvApp')
             value.length = scope.maxStreams;
           }
 
-          // Find all the new stream and add them to the pool
-          var newIds = _.pluck(_.pluck(value, 'stream'), 'id');
-          var oldIds = _.pluck(_.pluck(oldValue, 'stream'), 'id');
-          var newStreamsIds = _.difference(newIds, oldIds);
+          if(attrs.type == 'creator'){
 
-          // Post to the api the new streams
-          _.each(newStreamsIds, function(id){
-            streampoolService.resource.post({'stream_id': id}).$promise.then(
-              function(r){
-                // add the stream to the pool to trigger connection
-                scope.streamsConnected.push(r.stream);
+            // Find all the new stream and add them to the pool
+            var newIds = _.pluck(_.pluck(value, 'stream'), 'id');
+            var oldIds = _.pluck(_.pluck(oldValue, 'stream'), 'id');
+            var newStreamsIds = _.difference(newIds, oldIds);
 
-                // Connect to the data room if it is not connected
-                if(scope.localDataStream.stream.room === undefined){
-                  scope.token = r.token;
-                  drawScreen(true);
+            // Post to the api the new streams
+            _.each(newStreamsIds, function(id){
+              streampoolService.resource.post({'stream_id': id}).$promise.then(
+                function(r){
+
+                  // Connect to the data room if it is not connected
+                  if(scope.localDataStream.stream.room === undefined){
+                    scope.token = r.token;
+                    clearBigScreen();
+                  }
+                  else
+                  {
+                    // Broadcast to all users that a new stream is in the pool
+                    broadcastEvent('pool-change');
+                  }
+                },
+                function(){
+                  // remove the stream from the streams array
+                  _.reject(value, function(s){ return s.id === id;});
                 }
-                else
-                {
-                  // Broadcast to all users that a new stream is in the pool
-                  broadcastEvent('pool-change');
-                }
-              },
-              function(){
-                // remove the stream from the streams array
-                _.reject(value, function(s){ return s.id === id;});
-              }
-            );
-          });
+              );
+            });
+          }
         }, true);
 
         // Add loading listener to the video element for this stream
@@ -147,15 +157,28 @@ angular.module('peepoltvApp')
 
         scope.removeStream = function(data){
           // Remove the stream from the pool
-          var indexToRemove = _.indexOf(_.map(scope.streams, function(s) {
+          var indexToRemove = _.indexOf(_.map(scope.streamsPool, function(s) {
             return s.id;
           }), data.id);
 
           scope.$apply(function(){
-            scope.streams.splice(indexToRemove);
+            scope.streamsPool.splice(indexToRemove);
           });
         };
 
+        scope.dataReceived = function(data){
+
+          if(data.msg.event === 'stream-active'){
+            var activeStream = _.find(scope.streamsPool, function(s){ return s.stream.id == data.msg.params.stream_id;});
+            if(activeStream && activeStram.stream){
+              scope.changeStream(activeStream);
+            }
+          }
+
+          // Execute de callback on onStreamData event
+          if(scope.onStreamData){
+            scope.onStreamData({event: data.msg});
+          }
         };
 
         var broadcastEvent = function(event, params){
@@ -181,7 +204,7 @@ angular.module('peepoltvApp')
           }
 
           // Clear the big screen
-          drawScreen(true);
+          drawScreen(null, true);
         };
 
         var showStreamBig = function(stream){
@@ -189,18 +212,13 @@ angular.module('peepoltvApp')
             return;
           }
 
-          var elementId = JSON.parse(window.atob(stream.token)).tokenId;
-          // shut off the video
-          // if(video){
-          //   video.muted = true;
-          // }
-
           // Get the video from the licode directive
-          video = angular.element('video', '#licode_' + elementId)[0];
+          var video = getVideoElement(stream);
           // Set video volume
-          // if(!$scope.globalMute){
-          //   video.muted = false;
-          // }
+          if(video){
+            console.log("unmute: ", stream.id);
+            video.muted = false;
+          }
 
           // Clear the interval to start a new one
           if(interval){
@@ -209,12 +227,14 @@ angular.module('peepoltvApp')
 
           // Create a new interval to render the video
           if(video){
-            interval = setInterval(drawScreen, 33);
+            interval = setInterval(function(){
+              drawScreen(video);
+            }, 33);
           }
         };
 
         // Redrew at framerate to the canvas
-        var drawScreen = function(clear){
+        var drawScreen = function(video, clear){
           // dont't clear
           clear = clear || false;
 
