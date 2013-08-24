@@ -102,6 +102,16 @@ angular.module('peepoltvApp')
           });
         }, true);
 
+        // Add loading listener to the video element for this stream
+        scope.addLoadingListener = function(stream){
+          var videoEl = getVideoElement(stream);
+          videoEl.addEventListener('play', function(){
+            var videoModule = angular.element("#pool-stream-" + stream.id);
+            angular.element(".spinner-overlay", videoModule).removeClass(".loading");
+            angular.element("img", videoModule).hide();
+          });
+        }
+
         // Preview a stream
         scope.previewStream = function(data){
           // Show this stream in the big screen
@@ -153,6 +163,14 @@ angular.module('peepoltvApp')
             'event': event,
             params: params
           });
+        };
+
+        var getVideoElement = function(stream){
+          // Get the id from the stream dom element
+          var elementId = JSON.parse(window.atob(stream.token)).tokenId;
+
+          // Get the video from the licode directive
+          return angular.element('video', '#licode_' + elementId)[0];
         };
 
         // clear big stream

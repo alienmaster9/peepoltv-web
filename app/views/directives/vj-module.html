@@ -1,43 +1,56 @@
 <div class="carousel-wrapper">
+  <!-- Data room -->
   <licode ng-model="localDataStream" token="{{token}}" flow="outbound" data></licode>
+
   <div class="row-fluid">
     <div class="module-xlarge span12">
       <canvas id="canvas" width="940" height="512"></canvas>
     </div><!-- /.module-xlarge -->
   </div><!-- /.row-fluid -->
+
   <div class="row-fluid">
     <div class="video-slider span12">
       <a href="#" class="slider-control pull-left span1" title="Under Development" rel="tooltip"><i class="icon-arrow-left"></i><span class="visually-hidden">Previous</span></a>
+
       <div class="slider-wrapper pull-left span10" ng-show="streams.length > 0">
         <div class="row-fluid">
           <div class="span12">
+
             <ul class="no-bullets">
               <li class="module-mini pull-left span2" ng-repeat="connectedStream in streams | limitTo:maxStreams">
-                <div class="module-video"
+                <div id="pool-stream-{{connectedStream.stream.id}}"
+                     class="module-video"
                      ng-click="changeStream(connectedStream)"
                      ng-mouseenter="previewStream(connectedStream)"
                      ng-mouseleave="showCurrentStream()">
-                  <div class="module-overlay">
-                    <div class="btn-overlay">
-                      <button class="btn-play" type="button" rel="tooltip" data-title="Play Stream" ng-click="go('/streams/{{connectedStream.stream.id}}')">
-                        <span class="visually-hidden">Switch to this stream</span>
-                      </button>
-                    </div>
-                    <ul class="specs-stream no-bullets">
-                      <li class="specs-title"><em class="title">{{connectedStream.stream.title}}</em></li>
-                    </ul>
-                  </div><!-- /.module-overlay -->
-                  <licode flow="inbound" token="{{connectedStream.stream.token}}" width="115" height="65" audio video muted
-                          on-stream-removed="removeStream(connectedStream.stream)"></licode>
-                </div><!-- /.module-video -->
+
+                  <a class="live-stream-link">
+                    <img ng-src="{{connectedStream.stream.thumbs.small}}"/>
+                  </a>
+                  <div class="spinner-overlay loading">
+                    <div class="spinner"></div>
+                  </div>
+
+                  <!-- View stream connections -->
+                  <licode flow="inbound"
+                          token="{{connectedStream.stream.token}}"
+                          width="115" height="65"
+                          audio video muted
+                          on-stream-removed="removeStream(connectedStream.stream)"
+                          on-stream-subscribed="addLoadingListener(connectedStream.stream)"></licode>
+
+                </div>
               </li>
             </ul>
+
           </div>
         </div>
       </div>
+
       <div class="pull-left span10" ng-hide="streams.length > 0">
         <div>No live streams available right now</div>
       </div>
+
       <a href="#" class="slider-control pull-left span1" title="Under Development" rel="tooltip"><i class="icon-arrow-right"></i><span class="visually-hidden">Next</span></a>
     </div><!-- /.video-slider -->
   </div><!-- /.row-fluid -->
