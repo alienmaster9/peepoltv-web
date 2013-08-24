@@ -88,6 +88,14 @@ angular.module('licode', [])
             }
           });
 
+          // Stream data into the room
+          licode.stream.addEventListener('stream-data', function(event) {
+            // Execute stream data callback
+            if(scope.onStreamData){
+              scope.onStreamData({event: event});
+            }
+          });
+
         }
 
         // Connect to strean based on token change
@@ -140,14 +148,6 @@ angular.module('licode', [])
               }
             });
 
-            // Stream data into the room
-            room.addEventListener('stream-data', function(event) {
-              // Execute stream data callback
-              if(scope.onStreamData){
-                scope.onStreamData();
-              }
-            });
-
             if(attrs.flow === "outbound"){
 
               // Publish stream to the room
@@ -175,6 +175,14 @@ angular.module('licode', [])
                 if(scope.onStreamSubscribed){
                   scope.onStreamSubscribed();
                 }
+
+                // Stream data into the room
+                licode.stream.addEventListener('stream-data', function(event) {
+                  // Execute stream data callback
+                  if(scope.onStreamData){
+                    scope.onStreamData({event: event});
+                  }
+                });
               });
 
               // Subscribe to the first stream in the room stream
