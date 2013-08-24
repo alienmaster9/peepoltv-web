@@ -25,7 +25,7 @@ angular.module('peepoltvApp')
     geolocation.getCurrent();
 
     // Get the streams based on geolocation
-    streamService.resource.search({}, function(r){
+    streamService.resource.search({limit: 20}, function(r){
         $scope.streams = _.map(r, function(s){
           s.properties['marker-size'] = 'medium';
           s.properties['marker-color'] = '#A954F5';
