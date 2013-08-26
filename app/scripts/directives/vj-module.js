@@ -124,12 +124,30 @@ angular.module('peepoltvApp')
 
         // Preview a stream
         scope.previewStream = function(data){
+          // Mute preview
+          if(previewStream){
+            toggleMuteStream(previewStream, true);
+          }
+
+          // Set preview stream
+          previewStream = data.stream;
+
           // Show this stream in the big screen
           showStreamBig(data.stream);
+
         };
+
 
         // Go back to the current stream
         scope.showCurrentStream = function(){
+          // Mute preview
+          if(previewStream){
+            toggleMuteStream(previewStream, true);
+          }
+
+          // Remove preview
+          previewStream = undefined;
+
           if(currentStream){
             // Show currentstream in the big screen
             showStreamBig(currentStream);
@@ -139,10 +157,16 @@ angular.module('peepoltvApp')
           }
         };
 
+
         // Change the current stream
         scope.changeStream = function(data){
           // Show this stream in the big screen
           showStreamBig(data.stream);
+
+          // Mute the old stream
+          if(currentStream){
+            toggleMuteStream(currentStream, true);
+          }
 
           // Set the current stream
           currentStream = data.stream;
@@ -194,6 +218,22 @@ angular.module('peepoltvApp')
 
           // Get the video from the licode directive
           return angular.element('video', '#licode_' + elementId)[0];
+        };
+
+        var toggleMuteStream = function(stream, force){
+          // Get the video from the licode directive
+          var video = getVideoElement(stream);
+
+          // toggle mute
+          if(video){
+            if(force !== null){
+              video.muted = force;
+            }
+            else{
+              video.muted = !video.muted;
+            }
+            console.log(video.muted? 'muted: ' : 'unmuted: ', stream.id, video);
+          }
         };
 
         // clear big stream
