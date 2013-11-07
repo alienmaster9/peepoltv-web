@@ -3,31 +3,31 @@
     <div class="row-fluid">
       <div class="span12">
         <section class="mid-content">
-        	<div class="row-fluid">
-				<div class="span8">
-				  <h3 class="section-title">
-					<i class="channel-icon"></i> {{channel.name}}
-				  </h3>
-				</div>
-				<div class="span4">
-					<form method="get" name="form-geo" class="form-geo pull-right" role="search">
-						<label for="geolocate" class="visually-hidden">Search by location</label>
-						<div class="input-append input-prepend">
-							<span class="add-on">
-								<a href="#" title="Find Me!"><i class="icon-map-marker"></i></a>
-							</span>
-							<input type="search" placeholder="current location">
-							<input class="btn" type="submit" value="Go!">
-						</div><!-- /.input-append -->
-					</form>
-				</div><!-- /.span4 -->
-			</div><!-- /.row-fluid -->
+          <div class="row-fluid">
+            <div class="span8">
+              <h3 class="section-title">
+                <i class="channel-icon"></i> {{vm.channel.name}}
+              </h3>
+            </div>
+            <div class="span4">
+              <form method="get" name="form-geo" class="form-geo pull-right" role="search">
+                <label for="geolocate" class="visually-hidden">Search by location</label>
+                <div class="input-append input-prepend">
+                  <span class="add-on">
+                    <a href="#" title="Find Me!"><i class="icon-map-marker"></i></a>
+                  </span>
+                  <input type="search" placeholder="current location">
+                  <input class="btn" type="submit" value="Go!">
+                </div><!-- /.input-append -->
+              </form>
+            </div><!-- /.span4 -->
+          </div><!-- /.row-fluid -->
           <div class="row-fluid">
             <div class="span12">
               <div class="carousel-wrapper">
                 <div class="row-fluid">
                   <div class="module-xlarge span12">
-                    <div ng-include="'/views/snippets/module-xlarge-channel.html'"></div>
+                    <canvas id="canvas" width="940" height="512"></canvas>
                   </div><!-- /.module-xlarge -->
                 </div><!-- /.row-fluid -->
                 <div class="row-fluid">
@@ -37,8 +37,12 @@
                       <div class="row-fluid">
                         <div class="span12">
                           <ul class="no-bullets">
-                            <li class="module-mini pull-left span2" ng-repeat="stream in channel.streams | limitTo:20">
-                              <div ng-include="'/views/snippets/module-mini.html'" ng-click="changeMainStream(stream)"></div>
+                            <li class="module-mini pull-left span2" ng-repeat="liveStream in vm.streamPool"
+
+                                   ng-click="ctrl.changeStream(liveStream)"
+                                   ng-mouseenter="ctrl.previewStream(liveStream)"
+                                   ng-mouseleave="ctrl.showCurrentStream()">
+                              <div stream-viewer stream="liveStream" size="mini"></div>
                             </li>
                           </ul>
                         </div>
@@ -49,11 +53,11 @@
                 </div><!-- /.row-fluid -->
               </div><!-- /.carousel-wrapper -->
             </div><!-- /.span12 -->
-            </div><!-- /.row-fluid -->
+          </div><!-- /.row-fluid -->
         </section><!-- /.mid-content -->
 
-        <section class="lower-content stream-area">
-        <!-- NOTE FROM CHRIS: whenever section has streaming content, add stream-area class. And the hook.js refresh button as in below. -->
+        <section class="lower-content stream-area hide">
+          <!-- NOTE FROM CHRIS: whenever section has streaming content, add stream-area class. And the hook.js refresh button as in below. -->
           <div class="row-fluid hidden-phone">
             <div class="span12">
               <div class="hook" id="hook">
@@ -67,9 +71,11 @@
                 <i class="channel-icon"></i>
                 Matching Channels
               </h3>
-			</div><!-- /.span12 -->
-		<div ng-include="'/views/snippets/tags-list.html'"></div>
-</section><!-- /.lower-content -->
-
+            </div><!-- /.span12 -->
+          </div><!-- /.row-fluid -->
+          <!-- <div ng-include="'/views/snippets/tags-list.html'"></div> -->
+        </section><!-- /.lower-content -->
+      </div><!-- /.row-fluid -->
+    </div><!-- /.span12 -->
   </div><!-- /.container-fluid -->
 </div><!-- /.main -->

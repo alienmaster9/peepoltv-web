@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('peepoltvApp', ['ngRoute', 'ngResource', 'ui.bootstrap', 'pl-licode', 'plRestmod'])
-  .config(function ($routeProvider, $locationProvider) {
+  .config(function ($routeProvider, $locationProvider, $restmodProvider, settings) {
     $locationProvider.html5Mode(true);
     $routeProvider
 
@@ -65,11 +65,22 @@ angular.module('peepoltvApp', ['ngRoute', 'ngResource', 'ui.bootstrap', 'pl-lico
       })
       .when('/:channelName', {
         templateUrl: '/views/channel.html',
-        controller: 'ChannelCtrl'
+        controller: 'ChannelCtrl',
+        resolve: {
+          channel: ['$route', 'Channel', function($route, Channel){
+            return Channel.$find($route.current.params.channelName).$promise;
+          }]
+        }
       })
 
       .otherwise({
         redirectTo: '/'
+      });
+
+      $restmodProvider.pushModelBase(function(){
+        this.setRestUrlOptions({
+          baseUrl: settings.apiHost
+        })
       });
   })
   .run(function($location, $rootScope, authService){
@@ -79,6 +90,7 @@ angular.module('peepoltvApp', ['ngRoute', 'ngResource', 'ui.bootstrap', 'pl-lico
 
     $rootScope.$on('$routeChangeError', function (event, parameters) {
       // Navigate to main page
+      console.log("error", event, parameters);
       $location.path('/');
     });
 
