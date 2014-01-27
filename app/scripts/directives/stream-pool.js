@@ -40,7 +40,7 @@ angular.module('peepoltv.directives')
             stream.isMuted = false;
 
             // Trigger an event saying that we should show a new stream
-            scope.$emit('main-stream-changed', stream);
+            scope.$emit('stream-pool-stream-changed', stream);
           }
         });
 
@@ -78,6 +78,15 @@ angular.module('peepoltv.directives')
           }
         });
 
+        var triggerStreamEvent = function(eventName, stream){
+          var status = {
+            action: eventName,
+            stream: stream
+          };
+
+          scope.$emit('stream-pool-changed', status);
+        };
+
         // Update owl carrowsel status
         var afterAction = function(){
           var owlScope = this;
@@ -89,6 +98,9 @@ angular.module('peepoltv.directives')
 
               if(!isVisible && stream.isConnected && !stream.isProjected){
                 stream.isConnected = false;
+
+                // Trigger the stream removed
+                triggerStreamEvent('remove', stream);
               }
             });
 
@@ -114,11 +126,13 @@ angular.module('peepoltv.directives')
               // has a valid token
               if(stream.token !== null){
                 stream.isConnected = true;
+                triggerStreamEvent('add', stream);
               }
               // Remove the stream from the carousel
               else{
                 removeStream(stream.streamId, true);
               }
+
             });
 
             // Ensure the visible streams are playing
@@ -150,6 +164,9 @@ angular.module('peepoltv.directives')
 
             // mark stream as ignored
             streamToRemove.ignoreFromCarousel = true;
+
+            // Trigger the stream removed
+            triggerStreamEvent('remove', streamToRemove);
 
             // connect new streams if new stream becomes visible
             connectVisibleStreams(owlScope.visibleItems);

@@ -93,7 +93,10 @@ angular.module('peepoltv.services')
       newVjStream.$save();
 
       // Broadcast the event
-      channelSocket.broadcastEvent('pool-change');
+      channelSocket.broadcastEvent('pool-change', {
+        action: 'add',
+        streamId: stream.id
+      });
 
       return newVjStream.$promise;
     };
@@ -101,6 +104,18 @@ angular.module('peepoltv.services')
     // Remove a stream from the pool
     this.removeStream = function(stream){
 
+      // Remove the stream from the pool
+      var removeStream = getPoolStream(stream);
+      removeStream.$pk = stream.id;
+      removeStream.$destroy();
+
+      // Broadcast the event
+      channelSocket.broadcastEvent('pool-change', {
+        action: 'remove',
+        streamId: stream.id
+      });
+
+      return removeStream.$promise;
     };
 
     // Activate a stream from the pool
@@ -115,5 +130,7 @@ angular.module('peepoltv.services')
       channelSocket.broadcastEvent('active-stream-change', {
         streamId: stream.id
       });
+
+      return activeStream.$promise;
     };
   });
