@@ -4,7 +4,8 @@
       <a ui-sref="profile({userName: user.username})" class="user-avatar pull-left" title="click to view your profile">
 		    <img ng-src="{{ user.photo || (user.email | gravatar:120:'/images/profile-default.svg')}}" alt="your avatar"/>
 			</a>
-			<a class="btn-vj btn pull-left" ng-class="{true: 'vj-off', false: 'vj-on'}[!channel.vj]" ng-click="channel.vj = !channel.vj" role="button">{{!channel.vj && 'VJ Off' || 'VJ On'}}</a>
+			<a class="btn-vj btn pull-left vj-on" ng-click="stopVj()" ng-show="vjService.live" role="button">VJ On</a>
+      <a class="btn-vj btn pull-left vj-off" ng-click="startVj()" ng-show="!vjService.live" role="button">VJ Off</a>
       <ul class="social-list inline pull-left clearfix">
 		    <li><a href="#" title="click to share via facebook"><span class="visually-hidden">Facebook</span></a></li>
 		    <li><a href="#" title="click to share via twitter"><span class="visually-hidden">Twitter</span></a></li>
