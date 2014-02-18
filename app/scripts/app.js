@@ -144,7 +144,15 @@ angular.module('peepoltv', [
     .state('vjsession', {
       url: '/{channelName:[0-9a-zA-Z-_]+}/{userName:[0-9a-zA-Z-_]+}/',
       templateUrl: '/views/vj-session.html',
-      controller: 'VjSessionCtrl'
+      controller: 'VjSessionCtrl',
+      resolve: {
+        channel: ['$stateParams', 'Channel', function($stateParams, Channel){
+          return Channel.$find($stateParams.channelName).$promise;
+        }],
+        user: ['$stateParams', 'User', function($stateParams, User){
+          return User.$find($stateParams.userName).$promise;
+        }]
+      }
     })
 
     // Terms

@@ -22,9 +22,14 @@
   		</div>
 	    <div class="row-fluid">
 	      <div class="module-xlarge span12">
-	        <div ng-include="'/views/snippets/module-xlarge.html'"></div>
+          <div video-canvas-projector width="640" height="480" video="self.currentStream.licode.player.video"></div>
 	      </div><!-- /.module-xlarge -->
 	    </div><!-- /.row-fluid -->
+      <div class="hidden">
+        <div ng-repeat="vjstream in vjstreams | filter:{stream.status: 'live'}">
+          <div stream-viewer stream="vjstream.stream" size="mini" mute="true" on="true"></div>
+        </div>
+      </div>
 	  </section><!-- /.mid-content -->
   </div>
   <div class="width-controller container-fluid">

@@ -25,12 +25,19 @@ angular.module('peepoltv.services')
      * @param  {string} token Licode token
      */
     var socketConnect = function(token){
+      var deferred = $q.defer();
+
       channelSocket.connect(token).then(function(){
         _self.live = true;
 
         // Broadcast the event
         channelSocket.broadcastEvent('pool-change');
+
+        deferred.resolve();
+
       });
+
+      return deferred.promise;
     };
 
     /**
@@ -73,6 +80,14 @@ angular.module('peepoltv.services')
         });
       });
 
+    };
+
+    this.startListening = function(token){
+      socketConnect(token).then(function(){
+        channelSocket.stream.addEventListener('stream-data', function(caca){
+          console.log(caca);
+        });
+      });
     };
 
     // The vj will close the socket connection and stop the broadcast

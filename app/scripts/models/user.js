@@ -3,7 +3,8 @@
 angular.module('peepoltv.models')
   .factory('User', function ($restmod) {
     return $restmod.model('users', {
-      streams: { hasMany: 'Stream'}
+      streams: { hasMany: 'Stream'},
+      vjstreams: { hasMany: 'VjStream', path: 'streams_pool'}
     },
     function() {
       this.on('after-save', function() {
