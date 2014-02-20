@@ -8,6 +8,9 @@ angular.module('peepoltv.services')
     // Whether the vj service is live
     this.live = false;
 
+    // Intanciate a socket
+    this.socket = null;
+
     /**
      * Get the stream from the ppo
      * @param  {stream} stream
@@ -23,15 +26,19 @@ angular.module('peepoltv.services')
     /**
      * Create the room based on the token
      * @param  {string} token Licode token
+     * @param  {string} flow  Direction of the connection
      */
-    var socketConnect = function(token){
+    var socketConnect = function(token, flow){
       var deferred = $q.defer();
 
-      channelSocket.connect(token).then(function(){
+      _self.socket = channelSocket(token);
+      _self.socket.flow = flow;
+
+      _self.socket.connect().then(function(){
         _self.live = true;
 
         // Broadcast the event
-        channelSocket.broadcastEvent('pool-change');
+        _self.socket.broadcastEvent('pool-change');
 
         deferred.resolve();
 
@@ -53,7 +60,7 @@ angular.module('peepoltv.services')
 
         // If there are streams in the pool, connect to the socket
         if(_self.pool.length > 0){
-          socketConnect(_.first(_self.pool).token);
+          socketConnect(_.first(_self.pool).token, 'outbound');
         }
 
         // From the streams currently connected from the channels,
@@ -73,7 +80,7 @@ angular.module('peepoltv.services')
 
             // create the socked channel after the first stream is added
             if(!_self.live && idx === 0){
-              socketConnect(_vjStream.token);
+              socketConnect(_vjStream.token, 'outbound');
             }
           });
 
@@ -83,8 +90,8 @@ angular.module('peepoltv.services')
     };
 
     this.startListening = function(token){
-      socketConnect(token).then(function(){
-        channelSocket.stream.addEventListener('stream-data', function(caca){
+      socketConnect(token, 'inbound').then(function(){
+        _self.socket.stream.addEventListener('stream-data', function(caca){
           console.log(caca);
         });
       });
@@ -92,7 +99,7 @@ angular.module('peepoltv.services')
 
     // The vj will close the socket connection and stop the broadcast
     this.stopBroadcast = function(){
-      channelSocket.disconnect();
+      _self.socket.disconnect();
 
       this.live = false;
     };
@@ -108,7 +115,7 @@ angular.module('peepoltv.services')
       newVjStream.$save();
 
       // Broadcast the event
-      channelSocket.broadcastEvent('pool-change', {
+      _self.socket.broadcastEvent('pool-change', {
         action: 'add',
         streamId: stream.id
       });
@@ -125,7 +132,7 @@ angular.module('peepoltv.services')
       removeStream.$destroy();
 
       // Broadcast the event
-      channelSocket.broadcastEvent('pool-change', {
+      _self.socket.broadcastEvent('pool-change', {
         action: 'remove',
         streamId: stream.id
       });
@@ -142,7 +149,7 @@ angular.module('peepoltv.services')
       activeStream.$save();
 
       // Broadcast the event
-      channelSocket.broadcastEvent('active-stream-change', {
+      _self.socket.broadcastEvent('active-stream-change', {
         streamId: stream.id
       });
 
