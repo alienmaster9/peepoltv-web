@@ -90,11 +90,13 @@ angular.module('peepoltv.services')
     };
 
     this.startListening = function(token){
+      var deferred = $q.defer();
+
       socketConnect(token, 'inbound').then(function(){
-        _self.socket.stream.addEventListener('stream-data', function(caca){
-          console.log(caca);
-        });
+        deferred.resolve();
       });
+
+      return deferred.promise;
     };
 
     // The vj will close the socket connection and stop the broadcast
