@@ -114,30 +114,33 @@ angular.module('peepoltv.directives')
           var streams = _.filter(scope.streams, function(s){ return !s.ignoreFromCarousel; });
 
           // Connect the streams that become visible
+          // based on the visible indexes passed by the carrousel though the visibleItems param
           _.each(visibleItems, function(i){
             var stream = streams[i];
             if(!stream){ return; }
 
-            // This will connect the streams that aren't connected
-            // but the are becoming visible
-            // Update the token
-            stream.$fetch().$then(function(){
-              // Only try to connect if the refreshed stream
-              // has a valid token
-              if(stream.token !== null){
-                stream.isConnected = true;
-                triggerStreamEvent('add', stream);
-              }
-              // Remove the stream from the carousel
-              else{
-                removeStream(stream.streamId, true);
-              }
+            if(!stream.isConnected){
+              // This will connect the streams that aren't connected
+              // but the are becoming visible
+              // Update the token
+              stream.$fetch().$then(function(){
+                // Only try to connect if the refreshed stream
+                // has a valid token
+                if(stream.token !== null){
+                  stream.isConnected = true;
+                  triggerStreamEvent('add', stream);
+                }
+                // Remove the stream from the carousel
+                else{
+                  removeStream(stream.streamId, true);
+                }
 
-            });
+              });
 
-            // Ensure the visible streams are playing
-            if(stream.licode){
-              stream.licode.player.video.play();
+              // Ensure the visible streams are playing
+              if(stream.licode){
+                stream.licode.player.video.play();
+              }
             }
           });
         };
